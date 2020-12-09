@@ -27,3 +27,10 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+.idea/
+
+build_packer/base_image/.vagrant/
+build_packer/base_image/package.box
+build_packer/packer_cache
+build_packer/ubuntu2004.box
+build_vagrant/.vagrant/

@@ -1,0 +1,91 @@
+# -*- mode: ruby -*-
+# # vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.6.0"
+VAGRANTFILE_API_VERSION = "2"
+
+require 'json'
+
+init_script = File.read("./vm_init_scripts/initialize_instance.sh")
+
+#REPO_PATH = File.expand_path('..', File.dirname(__FILE__))
+
+REPO_VAGRANT = ENV["HASHI_VAGRANT_REPO_DIRECTORY"]
+REPO_COMMON = ENV["HASHI_COMMON_REPO_DIRECTORY"]
+
+if (REPO_VAGRANT == nil || REPO_COMMON == nil)
+    puts "HASHI_VAGRANT_REPO_DIRECTORY or HASHI_COMMON_REPO_DIRECTORY is not set"
+    abort
+end
+
+CONF_FILEPATH = File.join(REPO_VAGRANT, '/build_vagrant/conf/vagrant-cluster.json')
+
+servers = JSON.parse(File.read(CONF_FILEPATH))
+
+# box_file = "ubuntu/focal64"
+box_file = "file://" + File.join(REPO_VAGRANT, 'build_packer/base_image/package.box')
+box_file = "file:///home/ross/code/hashi-cluster-vagrant/build_packer/base_image/package.box"
+
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  servers.each do |server_data|
+
+    config.vm.define server_data["name"] do |srv|
+
+      srv.vm.box = box_file
+      # srv.vm.synced_folder REPO_PATH, "/repo"
+
+      config.vm.provision "file", source: REPO_COMMON + "/build", destination: "/tmp/scripts/build"
+      config.vm.provision "file", source: REPO_VAGRANT + "/build_vagrant", destination: "/tmp/scripts/build_vagrant"
+      config.vm.provision "file", source: REPO_COMMON +  "/services", destination: "/tmp/scripts/services"
+      config.vm.provision "file", source: REPO_COMMON + "/utilities", destination: "/tmp/scripts/utilities"
+
+      if File.exist?("/tmp/ansible-data/vault-tls-certs.zip")
+        config.vm.provision "file", source: "/tmp/ansible-data/vault-tls-certs.zip", destination: "/tmp/ansible-data/vault-tls-certs.zip"
+      end
+
+      srv.vm.provision "shell",
+                            inline: init_script,
+                            env: {
+                                "NODE_IP" => server_data["ip"],
+                                "NODE_NAME" => server_data["name"],
+                                "NODE_TYPE" => server_data["node_type"]
+                            }
+                       # , privileged: false
+
+      # srv.vm.cloud_init content_type: "text/x-shellscript", path: "./foo/bar.sh"
+
+      srv.ssh.username = "vagrant"
+      srv.ssh.password = "vagrant"
+      srv.ssh.insert_key = true
+      srv.ssh.keys_only = false
+
+      srv.vm.hostname = server_data["name"]
+      srv.vm.network "private_network", ip: server_data["ip"]
+
+      if server_data["name"] == "traefik-1"
+          srv.vm.network "forwarded_port", guest: 80, host: 8085
+          # another option: https://github.com/vagrant-landrush/landrush
+      end
+
+      srv.vm.provider :virtualbox do |vb|
+        vb.name = server_data["name"]
+        vb.memory = server_data["vm_memory"]
+        # vb.user_data = File.read(...)
+      end
+    end
+  end
+end
+
+
+# to print to console do:
+#old_sync = $stdout.sync
+#$stdout.sync = true
+#puts json_filepath
+#exit
+
+
+# future work:
+# - consider using swapfiles to reduce Vm memory use of hashi-server-*, vault and traefik: https://github.com/ianmiell/vagrant-swapfile/blob/master/vagrant-swapfile.sh
+# - persistent storage: https://github.com/kusnier/vagrant-persistent-storage
