@@ -24,7 +24,6 @@ servers = JSON.parse(File.read(CONF_FILEPATH))
 
 # box_file = "ubuntu/focal64"
 box_file = "file://" + File.join(REPO_VAGRANT, 'build_packer/base_image/package.box')
-box_file = "file:///home/ross/code/hashi-cluster-vagrant/build_packer/base_image/package.box"
 
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -40,6 +39,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       config.vm.provision "file", source: REPO_VAGRANT + "/build_vagrant", destination: "/tmp/scripts/build_vagrant"
       config.vm.provision "file", source: REPO_COMMON +  "/services", destination: "/tmp/scripts/services"
       config.vm.provision "file", source: REPO_COMMON + "/utilities", destination: "/tmp/scripts/utilities"
+
+      if server_data["node_type"] == "hashi_client"
+        tarballs_path = REPO_VAGRANT + "/operations/docker_tarballs"
+        srv.vm.synced_folder tarballs_path, "/docker_tarballs"
+      end
 
       if File.exist?("/tmp/ansible-data/vault-tls-certs.zip")
         config.vm.provision "file", source: "/tmp/ansible-data/vault-tls-certs.zip", destination: "/tmp/ansible-data/vault-tls-certs.zip"

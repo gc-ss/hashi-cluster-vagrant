@@ -65,10 +65,10 @@ build {
 
       "sudo chmod +x -R /home/vagrant/scripts/",
 
-      "sudo /home/vagrant/scripts/install-docker.sh",
-
       "sudo cp /home/vagrant/scripts/hashicorp-sudoers /etc/sudoers.d/hashicorp-sudoers",
       "sudo -H pip3 install -r /home/vagrant/scripts/python-requirements.txt",
+
+      "sudo /home/vagrant/scripts/install-docker.sh",
 
       "sudo /home/vagrant/scripts/install-ansible__vagrant.sh",
 

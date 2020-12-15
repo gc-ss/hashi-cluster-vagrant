@@ -60,6 +60,10 @@ mkdir -p /tmp/ansible-data/
 chmod 0777 /tmp/ansible-data/
 
 
+touch  /var/log/traefik-python-render.log
+chmod 0777  /var/log/traefik-python-render.log
+
+
 if [[ "$NODE_TYPE" == "vault" ]]
   then
     echo "CONSUL_HTTP_ADDR=\"127.0.0.1:8500\"" >> /etc/environment
@@ -68,4 +72,12 @@ else
   # these need to be set for the Consul and Nomad CLIs to work in ssh sessions
   echo "CONSUL_HTTP_ADDR=\"$NODE_IP:8500\"" >> /etc/environment
   echo "NOMAD_ADDR=\"http://$NODE_IP:4646\"" >> /etc/environment
+fi
+
+
+if [[ "$NODE_NAME" == "traefik-1" ]]; then
+  # install envoy (todo: move to packer)
+  curl -L https://getenvoy.io/cli | sudo bash -s -- -b /usr/local/bin
+  sudo -u vagrant getenvoy fetch standard:1.16.1
+  sudo cp /home/vagrant/.getenvoy/builds/standard/1.16.1/linux_glibc/bin/envoy /usr/bin/envoy
 fi

@@ -34,3 +34,4 @@ build_packer/base_image/package.box
 build_packer/packer_cache
 build_packer/ubuntu2004.box
 build_vagrant/.vagrant/
+operations/docker_tarballs

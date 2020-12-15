@@ -61,15 +61,17 @@ echo "127.0.0.1 nomad.localhost" >> /etc/hosts
 When the cluster has successfully initialized you will see some tokens printed to the console:
 
 ```
+consul bootstrap token:                         4712dcf0-7ac8-4c17-e4c5-f816f611dccd
+consul gossip encryption key:                   xrg1U5nKnrBG72l0ejy0pmkbY3M4Gdf5OpaI
 
-    consul bootstrap token:                         68fc76db-68e1-8ed5-cda3-c4e999c1
-    consul gossip encryption key:                   HlP1zzUq1fPHPmOijREvHNkL97RyhTTE
+consul UI token (read/write):                   689d66e0-3174-7f5e-3679-22080633f124
+consul UI token (read-only):                    ae375762-606f-b7f7-fcf7-50fc32dc320a
 
-    consul UI token (read/write):                   5d9c505f-06ea-b69f-11e5-ebad2037
-    consul UI token (read-only):                    c14f1ae7-4151-4b70-8f28-5ac23151
+vault root token:                               s.2vDe3uZ1JWidKS1xUsSYi7Y0
+vault write-only token:                         s.tv1XD45e22QW6jfSkg3zxwfI
+vault unseal key:                               Uwon8UhjsO7IYgksbrmmEJ96rAYkOvgd3iM4
 
-    vault root token:                               s.XOFjR30ZDSjQ9PYFjjut2mbq
-    vault write-only token:                         s.1N3qtpI7jnEbTWnRUDCyHtXZ
+Connection to 127.0.0.1 closed.
 ```
 
 Dashboards for Traefik, Consul and Nomad will be accessible at:
@@ -84,3 +86,11 @@ The Consul dashboard requires that you log in with your Consul UI read/write tok
 #### Deploy your first service
 
 To deploy a service to the cluster, the steps are identical to hashi-cluster-gcp: https://gcp-hashi-cluster.readthedocs.io/5_deploy_your_first_service.html
+
+
+#### Destroying the cluster
+
+```
+$ cd build_vagrant/
+$ vagrant destroy -f
+```

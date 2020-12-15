@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   config.vm.define "source", autostart: false do |source|
-	source.vm.box = "/home/ross/code/hashi-cluster-vagrant/build_packer/ubuntu2004.box"
+	source.vm.box = "/home/ross/code/hashi-cluster/hashi-cluster-vagrant/build_packer/ubuntu2004.box"
 	config.ssh.insert_key = false
   end
   config.vm.define "output" do |output|

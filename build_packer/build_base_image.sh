@@ -8,12 +8,12 @@ cd $PACKER_DIR || exit
 
 
 if [ ! -f "$UBUNTU_IMAGE_FILEPATH" ]; then
-  wget https://app.vagrantup.com/generic/boxes/ubuntu2004/versions/3.1.2/providers/virtualbox.box -o "./ubuntu2004.box"
+  wget https://app.vagrantup.com/generic/boxes/ubuntu2004/versions/3.1.12/providers/virtualbox.box -o "$UBUNTU_IMAGE_FILEPATH"
 fi
 
 
 rm -rf "$PACKER_DIR/base_image"
-
+rm -rf "$PACKER_DIR/packer_cache"
 
 packer build -force \
    -var="hashi_vagrant_repo_directory=$HASHI_VAGRANT_REPO_DIRECTORY" \
