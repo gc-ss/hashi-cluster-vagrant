@@ -4,6 +4,7 @@
 
 It is designed to get you up and running quickly with minimal configuration and sensible defaults. No prior knowledge of Consul, Nomad, Vault or Vagrant is required.
 
+** NOTE: ** traefik's upstream connection to the service mesh is currently broken. I expect to fix this very soon.
 
 ### Installation Requirements:
 
