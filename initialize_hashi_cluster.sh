@@ -1,6 +1,11 @@
 #!/bin/bash
 
 
+if [ -f ".env" ]; then
+  source .env
+fi
+
+
 if [[ -z $HASHI_VAGRANT_REPO_DIRECTORY ]]; then
   echo "error: HASHI_VAGRANT_REPO_DIRECTORY env variable must be set"; exit 1
 fi

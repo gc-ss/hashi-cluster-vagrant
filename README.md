@@ -81,7 +81,7 @@ Dashboards for Traefik, Consul and Nomad will be accessible at:
 * http://consul.localhost:8085/ui 
 * http://nomad.localhost:8085/ui
 
-The Consul dashboard requires that you log in with your Consul UI read/write token.  If everything is working correctly, you should see your services in the Consul UI: `consul`, `nomad-server`, `nomad-client`, `traefik`, `vault-server`. If any of these are missing, wait 5 minutes and refresh the page.
+The Consul dashboard requires that you log in with your Consul UI read/write token.  If everything is working correctly, you should see your services in the Consul UI: `consul`, `nomad-server`, `nomad-client`, `traefik`, `vault-server`. Often these don't show the first time you load the page, refresh the page and they should appear.
 
 
 #### Deploy your first service

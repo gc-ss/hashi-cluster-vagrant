@@ -12,6 +12,8 @@ init_script = File.read("./vm_init_scripts/initialize_instance.sh")
 
 REPO_VAGRANT = ENV["HASHI_VAGRANT_REPO_DIRECTORY"]
 REPO_COMMON = ENV["HASHI_COMMON_REPO_DIRECTORY"]
+VAGRANT_SHARED_PATH = ENV["VAGRANT_SHARED_PATH"]
+
 
 if (REPO_VAGRANT == nil || REPO_COMMON == nil)
     puts "HASHI_VAGRANT_REPO_DIRECTORY or HASHI_COMMON_REPO_DIRECTORY is not set"
@@ -43,6 +45,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if server_data["node_type"] == "hashi_client"
         tarballs_path = REPO_VAGRANT + "/operations/docker_tarballs"
         srv.vm.synced_folder tarballs_path, "/docker_tarballs"
+        if NOMAD_SHARED_PATH != nil
+          srv.vm.synced_folder VAGRANT_SHARED_PATH, "/vagrant_shared"
+        else
+          puts "warning: missing VAGRANT_SHARED_PATH"
+        end
       end
 
       if File.exist?("/tmp/ansible-data/vault-tls-certs.zip")
